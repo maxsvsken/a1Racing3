@@ -55,6 +55,8 @@
     .spotlight-text-overlay {
         justify-content: center;
         padding-right: 0;
+        align-items: flex-start;
+        padding-top: 8vh;
     }
 }
 
@@ -63,5 +65,9 @@
         font-size: 140px;
         filter: blur(2px);
         opacity: 0.5;
+    }
+
+    .spotlight-text-overlay {
+        padding-top: 6vh;
     }
 }
