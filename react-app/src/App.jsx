@@ -160,15 +160,37 @@ export default function App() {
     };
     window.addEventListener('load', handleLoad);
 
-    // Дополнительное обновление через таймер для надежности (когда картинки загружаются)
-    const timer = setTimeout(() => {
+    // Каскадные обновления ScrollTrigger для надёжности
+    // (WebGL canvas, шрифты и картинки грузятся асинхронно, сдвигая высоту страницы)
+    const timer1 = setTimeout(() => { ScrollTrigger.refresh(); }, 800);
+    const timer2 = setTimeout(() => { ScrollTrigger.refresh(); }, 2000);
+    const timer3 = setTimeout(() => { ScrollTrigger.refresh(); }, 4000);
+
+    // Фоллбэк: через 3 секунды принудительно показать все секции,
+    // которые GSAP мог не раскрыть из-за неправильных координат
+    const fallbackTimer = setTimeout(() => {
+      sections.forEach(sec => {
+        const el = document.getElementById(sec.id);
+        if (el && !el.classList.contains('is-visible')) {
+          el.classList.add('is-visible');
+        }
+      });
+      // Сбросить застрявшие from-анимации: убрать inline opacity:0
+      document.querySelectorAll('.section-title, .section-desc, .glass-panel, .solutions-grid > div, .code-scroll-item, .art-frame').forEach(el => {
+        if (el.style.opacity === '0') {
+          gsap.set(el, { opacity: 1, y: 0, clearProps: 'filter' });
+        }
+      });
       ScrollTrigger.refresh();
-    }, 1500);
+    }, 3500);
 
     return () => {
       lenis.destroy();
       window.removeEventListener('load', handleLoad);
-      clearTimeout(timer);
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+      clearTimeout(fallbackTimer);
       ScrollTrigger.getAll().forEach(t => t.kill());
     };
   }, []);
