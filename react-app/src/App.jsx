@@ -274,7 +274,7 @@ export default function App() {
         <div className="bat-signal-container">
           <div className="bat-signal-beam"></div>
           <div className="bat-signal-projection">
-            <img src="/images/logo.svg" className="bat-signal-logo" alt="А1 Signal" />
+            <img src="/images/logo.webp" className="bat-signal-logo" alt="А1 Signal" />
           </div>
         </div>
 

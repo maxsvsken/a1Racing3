@@ -1195,13 +1195,8 @@ section {
 .bat-signal-logo {
     width: 100px;
     height: auto;
-    filter: drop-shadow(0 0 20px rgba(255, 183, 0, 0.9)) brightness(1.5);
-    opacity: 0.85;
-}
-
-.bat-signal-logo path,
-.bat-signal-logo g {
-    fill: var(--color-accent-yellow) !important;
+    filter: brightness(0) blur(2px);
+    opacity: 0.75;
 }
 
 @keyframes signalPulse {
@@ -1298,6 +1293,7 @@ section {
     
     .bat-signal-logo {
         width: 75px;
+        filter: brightness(0) blur(1.5px);
     }
 
     /* Отключаем вертикальные линии сетки на планшетах */
@@ -1325,6 +1321,7 @@ section {
     }
     .bat-signal-logo {
         width: 60px;
+        filter: brightness(0) blur(1px);
     }
 }
 
