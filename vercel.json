@@ -1,4 +1,8 @@
 {
+  "buildCommand": "npm install --prefix react-app && npm run build --prefix react-app",
+  "outputDirectory": "react-app/dist",
+  "framework": null,
+  "cleanUrls": true,
   "headers": [
     {
       "source": "/index.html",
