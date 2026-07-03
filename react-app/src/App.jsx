@@ -153,8 +153,21 @@ export default function App() {
       }
     });
 
+    // Обновление ScrollTrigger после загрузки всех ресурсов
+    const handleLoad = () => {
+      ScrollTrigger.refresh();
+    };
+    window.addEventListener('load', handleLoad);
+
+    // Дополнительное обновление через таймер для надежности (когда картинки загружаются)
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 1500);
+
     return () => {
       lenis.destroy();
+      window.removeEventListener('load', handleLoad);
+      clearTimeout(timer);
       ScrollTrigger.getAll().forEach(t => t.kill());
     };
   }, []);
