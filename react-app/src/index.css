@@ -899,9 +899,10 @@ section {
     }
     
     .hero {
-        padding-top: 90px;
+        padding-top: 130px;
         padding-bottom: 60px;
         min-height: 100vh;
+        align-items: flex-start;
     }
     
     #about .about-layout,
@@ -945,9 +946,10 @@ section {
     }
     
     .hero {
-        padding-top: 75px;
+        padding-top: 100px;
         padding-bottom: 40px;
         min-height: 100vh;
+        align-items: flex-start;
     }
     
 
