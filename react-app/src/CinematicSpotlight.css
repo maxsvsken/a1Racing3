@@ -54,9 +54,9 @@
 @media (max-width: 991px) {
     .spotlight-text-overlay {
         justify-content: center;
-        align-items: flex-end;
-        padding-bottom: 30px;
-        padding-top: 0;
+        align-items: flex-start;
+        padding-top: 300px;
+        padding-bottom: 0;
         padding-right: 0;
     }
     .spotlight-a1-text {
@@ -67,7 +67,8 @@
 
 @media (max-width: 576px) {
     .spotlight-text-overlay {
-        padding-bottom: 15px;
+        padding-top: 240px;
+        padding-bottom: 0;
     }
     .spotlight-a1-text {
         font-size: 80px;
