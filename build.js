@@ -3,7 +3,11 @@ const fs = require('fs');
 const path = require('path');
 
 try {
-  // 1. Сборка Vite приложения в react-app
+  // 1. Установка зависимостей в react-app
+  console.log('Installing dependencies inside react-app...');
+  execSync('npm install', { cwd: path.join(__dirname, 'react-app'), stdio: 'inherit' });
+
+  // 2. Сборка Vite приложения в react-app
   console.log('Building Vite app inside react-app...');
   execSync('npm run build', { cwd: path.join(__dirname, 'react-app'), stdio: 'inherit' });
 
