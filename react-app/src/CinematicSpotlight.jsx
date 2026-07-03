@@ -16,6 +16,8 @@ const CinematicSpotlight = ({ className = '' }) => {
   const currentPosRef = useRef({ x: 0.72, y: 0.32 });
   const textRef = useRef(null);
   const textBasePos = useRef({ x: 0.72, y: 0.32 });
+  const startTimeRef = useRef(null);
+  const hasInteractedRef = useRef(false);
 
   // Monitor visibility
   const [isVisible, setIsVisible] = useState(true);
@@ -277,20 +279,42 @@ void main() {
       window.addEventListener('resize', handleResize);
       handleResize();
 
+
+
       const animLoop = time => {
         if (!rendererRef.current || !uniformsRef.current) return;
 
         uniforms.iTime.value = time * 0.001;
+
+        if (!startTimeRef.current) {
+          startTimeRef.current = time;
+        }
+
+        const elapsed = time - startTimeRef.current;
+        const scanDuration = 6000; // 6 секунд сканирования
 
         // Read hover state from ref (no re-render)
         let targetX, targetY;
         if (isHoveredRef.current) {
           targetX = mousePosRef.current.x;
           targetY = mousePosRef.current.y;
+          hasInteractedRef.current = true;
         } else {
-          // Slow cinematic sweep centered exactly on the text!
-          targetX = textBasePos.current.x + 0.16 * Math.sin(time * 0.0003);
-          targetY = textBasePos.current.y + 0.08 * Math.cos(time * 0.0005);
+          const baseX = textBasePos.current.x;
+          const baseY = textBasePos.current.y;
+
+          if (elapsed < scanDuration && !hasInteractedRef.current) {
+            const progress = elapsed / scanDuration;
+            const amp = 1.0 - progress; // Затухание амплитуды поиска
+            
+            // Спиральное сужение траектории поиска к центру А1
+            targetX = baseX + 0.45 * Math.sin(time * 0.0016) * amp;
+            targetY = baseY + 0.22 * Math.cos(time * 0.0011) * amp;
+          } else {
+            // Захват цели: микро-дрожание живого прожектора на тексте А1
+            targetX = baseX + 0.006 * Math.sin(time * 0.001);
+            targetY = baseY + 0.004 * Math.cos(time * 0.0007);
+          }
         }
 
         // Smooth interpolation with inertia
