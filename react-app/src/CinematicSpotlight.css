@@ -64,7 +64,7 @@
     .spotlight-text-overlay {
         justify-content: center;
         align-items: flex-end;
-        bottom: 25vh;
+        bottom: 16vh;
         padding-bottom: 0;
         padding-top: 0;
         padding-right: 0;
@@ -79,7 +79,7 @@
 
 @media (max-width: 576px) {
     .spotlight-text-overlay {
-        bottom: 20vh; /* Позиционируем под кнопками на смартфонах с красивым зазором */
+        bottom: 12vh; /* Сдвигаем ниже для красивого расстояния под кнопкой */
     }
     .spotlight-a1-text {
         font-size: 110px;
