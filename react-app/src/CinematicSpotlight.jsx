@@ -12,31 +12,12 @@ const CinematicSpotlight = ({ className = '' }) => {
 
   // Use refs for hover/mouse to avoid re-creating WebGL on state change
   const isHoveredRef = useRef(false);
-  const isMobileRef = useRef(false);
   const mousePosRef = useRef({ x: 0.72, y: 0.32 });
   const currentPosRef = useRef({ x: 0.72, y: 0.32 });
 
   // Monitor visibility
   const [isVisible, setIsVisible] = useState(true);
   const observerRef = useRef(null);
-
-  // Initialize mobile detection
-  useEffect(() => {
-    const checkMobile = () => {
-      isMobileRef.current = window.innerWidth <= 768;
-      // Update default positions if mobile state changes
-      if (isMobileRef.current) {
-        mousePosRef.current.x = 0.5;
-        currentPosRef.current.x = 0.5;
-      } else {
-        mousePosRef.current.x = 0.72;
-        currentPosRef.current.x = 0.72;
-      }
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -261,7 +242,7 @@ void main() {
       const uniforms = {
         iTime: { value: 0 },
         iResolution: { value: [1, 1] },
-        iSpotlight: { value: [isMobile ? 0.5 : 0.72, 0.32] }
+        iSpotlight: { value: [0.72, 0.32] }
       };
       uniformsRef.current = uniforms;
 
@@ -295,11 +276,9 @@ void main() {
           targetX = mousePosRef.current.x;
           targetY = mousePosRef.current.y;
         } else {
-          // Slow cinematic sweep - responsive to mobile
-          const sweepX = isMobile ? 0.5 : (0.55 + 0.22 * Math.sin(time * 0.00025));
-          const sweepY = 0.32 + 0.12 * Math.cos(time * 0.00045);
-          targetX = sweepX;
-          targetY = sweepY;
+          // Slow cinematic sweep
+          targetX = 0.55 + 0.22 * Math.sin(time * 0.00025);
+          targetY = 0.32 + 0.12 * Math.cos(time * 0.00045);
         }
 
         // Smooth interpolation with inertia
