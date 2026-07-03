@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 import ColorBends from './ColorBends';
+import LightRays from './LightRays';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -285,7 +286,19 @@ export default function App() {
 
         {/* Анимация прожектора А1 (Бэт-сигнал) */}
         <div className="bat-signal-container">
-          <div className="bat-signal-beam"></div>
+          <LightRays
+            raysOrigin="bottom-center"
+            raysColor="#ffb700"
+            raysSpeed={0.8}
+            lightSpread={0.6}
+            rayLength={1.5}
+            pulsating={true}
+            followMouse={true}
+            mouseInfluence={0.35}
+            noiseAmount={0.06}
+            distortion={0.08}
+            className="bat-signal-beam-webgl"
+          />
           <div className="bat-signal-projection">
             <div className="bat-signal-text">А1</div>
           </div>
