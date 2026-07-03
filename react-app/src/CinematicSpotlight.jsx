@@ -17,7 +17,7 @@ const CinematicSpotlight = ({ className = '' }) => {
   const textRef = useRef(null);
   const textBasePos = useRef(
     typeof window !== 'undefined' && window.innerWidth <= 991
-      ? { x: 0.5, y: 0.22 }
+      ? { x: 0.5, y: 0.72 }
       : { x: 0.72, y: 0.45 }
   );
   const startTimeRef = useRef(null);
