@@ -15,7 +15,11 @@ const CinematicSpotlight = ({ className = '' }) => {
   const mousePosRef = useRef({ x: 0.72, y: 0.32 });
   const currentPosRef = useRef({ x: 0.72, y: 0.32 });
   const textRef = useRef(null);
-  const textBasePos = useRef({ x: 0.72, y: 0.32 });
+  const textBasePos = useRef(
+    typeof window !== 'undefined' && window.innerWidth <= 991
+      ? { x: 0.5, y: 0.22 }
+      : { x: 0.72, y: 0.45 }
+  );
   const startTimeRef = useRef(null);
   const hasInteractedRef = useRef(false);
 
@@ -269,10 +273,12 @@ void main() {
         if (textRef.current && containerRef.current) {
           const textRect = textRef.current.getBoundingClientRect();
           const containerRect = containerRef.current.getBoundingClientRect();
-          textBasePos.current = {
-            x: (textRect.left + textRect.width * 0.5 - containerRect.left) / containerRect.width,
-            y: (textRect.top + textRect.height * 0.5 - containerRect.top) / containerRect.height
-          };
+          if (textRect.width > 0 && textRect.height > 0) {
+            textBasePos.current = {
+              x: (textRect.left + textRect.width * 0.5 - containerRect.left) / containerRect.width,
+              y: (textRect.top + textRect.height * 0.5 - containerRect.top) / containerRect.height
+            };
+          }
         }
       };
 
