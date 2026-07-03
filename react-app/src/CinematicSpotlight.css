@@ -1,0 +1,100 @@
+.cinematic-spotlight-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+    pointer-events: auto; /* Allow container to track hover and mousemove */
+}
+
+.spotlight-canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.spotlight-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 40px;
+    box-sizing: border-box;
+}
+
+.spotlight-svg {
+    width: 100%;
+    height: 100%;
+    max-width: 1000px;
+    max-height: 400px;
+    pointer-events: none;
+    overflow: visible;
+}
+
+/* Base text revealed by spotlight */
+.spotlight-text-base {
+    font-family: var(--font-display), 'Outfit', 'Inter', sans-serif;
+    font-size: 340px;
+    font-weight: 950;
+    fill: url(#spotlight-metal-grad);
+    letter-spacing: -12px;
+    text-transform: uppercase;
+    user-select: none;
+    opacity: 0.9;
+}
+
+/* Sharp edge specular reflection layer */
+.spotlight-text-specular {
+    font-family: var(--font-display), 'Outfit', 'Inter', sans-serif;
+    font-size: 340px;
+    font-weight: 950;
+    fill: transparent;
+    stroke: url(#spotlight-specular-grad);
+    stroke-width: 4px;
+    letter-spacing: -12px;
+    text-transform: uppercase;
+    user-select: none;
+    filter: drop-shadow(0 0 15px rgba(255, 183, 0, 0.7));
+}
+
+/* Mobile responsive adaptations */
+@media (max-width: 991px) {
+    .spotlight-overlay {
+        padding: 0 20px;
+    }
+    
+    .spotlight-text-base,
+    .spotlight-text-specular {
+        font-size: 240px;
+        letter-spacing: -8px;
+    }
+    
+    .spotlight-text-specular {
+        stroke-width: 3px;
+    }
+}
+
+@media (max-width: 576px) {
+    .spotlight-text-base,
+    .spotlight-text-specular {
+        font-size: 160px;
+        letter-spacing: -5px;
+    }
+    
+    .spotlight-text-specular {
+        stroke-width: 2px;
+        filter: drop-shadow(0 0 8px rgba(255, 183, 0, 0.6));
+    }
+}
