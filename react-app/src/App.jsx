@@ -510,7 +510,7 @@ export default function App() {
                   <span className="accordion-arrow" style={{ color: 'var(--color-accent-blue)', fontSize: '1.5rem' }}>+</span>
                 </summary>
                 <p style={{ marginTop: '16px', color: 'var(--color-text-secondary)', fontSize: '1rem', lineHeight: '1.6', cursor: 'default' }}>
-                  Разрабатываем комплексные программы financial оздоровления, ведем переговоры с банками.
+                  Разрабатываем комплексные программы финансового оздоровления, ведем переговоры с банками.
                 </p>
               </details>
               
@@ -624,7 +624,7 @@ export default function App() {
         </div>
 
         <div className="container">
-          <span className="section-label">06 / Кто зарабатывает с А1</span>
+          <span className="section-label">07 / Кто зарабатывает с А1</span>
           <h2 className="section-title text-gradient-chrome" style={{ marginBottom: '48px' }}>
             КТО ЗАРАБАТЫВАЕТ С А1
           </h2>
