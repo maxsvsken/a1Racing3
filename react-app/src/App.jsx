@@ -381,7 +381,7 @@ export default function App() {
 
         {/* Фоновое изображение с эффектом Zoom Reveal */}
         <div className="section-bg">
-          <div className="section-bg-image" style={{ backgroundImage: "url('/images/superhero/superhero_building_bg.png')" }}></div>
+          <div className="section-bg-image" style={{ backgroundImage: "url('/images/superhero/superhero_director_bg.png')" }}></div>
           <div className="section-bg-overlay"></div>
         </div>
 
@@ -435,7 +435,7 @@ export default function App() {
 
         {/* Фоновое изображение с эффектом Zoom Reveal */}
         <div className="section-bg">
-          <div className="section-bg-image" style={{ backgroundImage: "url('/images/superhero/superhero_building_bg.png')" }}></div>
+          <div className="section-bg-image" style={{ backgroundImage: "url('/images/superhero/superhero_investors_bg.png')" }}></div>
           <div className="section-bg-overlay"></div>
         </div>
 
@@ -502,7 +502,7 @@ export default function App() {
 
         {/* Фоновое изображение с эффектом Zoom Reveal */}
         <div className="section-bg">
-          <div className="section-bg-image" style={{ backgroundImage: "url('/images/superhero/superhero_building_bg.png')" }}></div>
+          <div className="section-bg-image" style={{ backgroundImage: "url('/images/superhero/superhero_expertise_bg.png')" }}></div>
           <div className="section-bg-overlay"></div>
         </div>
 
@@ -583,7 +583,7 @@ export default function App() {
 
         {/* Фоновое изображение с эффектом Zoom Reveal */}
         <div className="section-bg">
-          <div className="section-bg-image" style={{ backgroundImage: "url('/images/superhero/superhero_building_bg.png')" }}></div>
+          <div className="section-bg-image" style={{ backgroundImage: "url('/images/superhero/superhero_code_bg.png')" }}></div>
           <div className="section-bg-overlay"></div>
         </div>
 
@@ -637,7 +637,7 @@ export default function App() {
 
         {/* Фоновое изображение с эффектом Zoom Reveal */}
         <div className="section-bg">
-          <div className="section-bg-image" style={{ backgroundImage: "url('/images/superhero/superhero_building_bg.png')" }}></div>
+          <div className="section-bg-image" style={{ backgroundImage: "url('/images/superhero/superhero_audience_bg.png')" }}></div>
           <div className="section-bg-overlay"></div>
         </div>
 
