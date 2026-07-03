@@ -19,19 +19,17 @@
     pointer-events: none;
 }
 
-/* Dark blurred A1 text overlay — shifted to the right */
+/* Base mobile-first layout: positioned at the bottom under the buttons */
 .spotlight-text-overlay {
     position: absolute;
-    top: 0;
+    bottom: 25px;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: auto;
     z-index: 2;
     pointer-events: none;
     display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding-right: 12%;
+    justify-content: center;
     box-sizing: border-box;
 }
 
@@ -51,14 +49,19 @@
         0 0 120px rgba(0, 0, 0, 0.3);
 }
 
-@media (max-width: 991px) {
+/* Desktop positioning: center-right */
+@media (min-width: 992px) {
     .spotlight-text-overlay {
-        justify-content: center;
-        align-items: flex-start;
-        padding-top: 300px;
-        padding-bottom: 0;
-        padding-right: 0;
+        top: 0;
+        bottom: auto;
+        height: 100%;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 12%;
     }
+}
+
+@media (max-width: 991px) {
     .spotlight-a1-text {
         font-size: 110px;
         letter-spacing: -6px;
@@ -67,8 +70,7 @@
 
 @media (max-width: 576px) {
     .spotlight-text-overlay {
-        padding-top: 240px;
-        padding-bottom: 0;
+        bottom: 10px; /* Вплотную под кнопками на смартфонах */
     }
     .spotlight-a1-text {
         font-size: 80px;
