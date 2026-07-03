@@ -1139,6 +1139,16 @@ section {
     background: radial-gradient(circle at center, rgba(3, 5, 12, 0.3) 0%, rgba(3, 5, 12, 0.82) 80%);
 }
 
+/* Скрываем затемнение для средних блоков, чтобы картинки были 100% яркими */
+#about .section-bg-overlay,
+#director .section-bg-overlay,
+#investors .section-bg-overlay,
+#today .section-bg-overlay,
+#code .section-bg-overlay,
+#audience .section-bg-overlay {
+    display: none;
+}
+
 /* Анимация прожектора А1 (Бэт-сигнал) */
 .bat-signal-container {
     position: absolute;
