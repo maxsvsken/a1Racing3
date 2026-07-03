@@ -54,6 +54,8 @@
 @media (max-width: 991px) {
     .spotlight-text-overlay {
         justify-content: center;
+        align-items: flex-start;
+        padding-top: 40px;
         padding-right: 0;
     }
 }
