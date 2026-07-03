@@ -1116,16 +1116,18 @@ section {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    opacity: 0.22; /* Приглушенный фон для идеальной читаемости текста */
+    opacity: 1; /* Полная непрозрачность */
     transform: scale(1.18);
     filter: blur(8px) saturate(80%);
     transition: transform 2s cubic-bezier(0.16, 1, 0.3, 1), filter 2s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.5s ease;
+    mask-image: radial-gradient(circle, black 35%, transparent 75%);
+    -webkit-mask-image: radial-gradient(circle, black 35%, transparent 75%);
 }
 
 .is-visible .section-bg-image {
     transform: scale(1);
     filter: blur(0) saturate(100%);
-    opacity: 0.22;
+    opacity: 1;
 }
 
 .section-bg-overlay {
@@ -1285,7 +1287,9 @@ section {
         /* На смартфонах отключаем масштабирование и блюр для производительности */
         transform: none !important;
         filter: none !important;
-        opacity: 0.1;
+        opacity: 1;
+        mask-image: radial-gradient(circle, black 25%, transparent 65%);
+        -webkit-mask-image: radial-gradient(circle, black 25%, transparent 65%);
     }
 
     .tech-grid-line {
