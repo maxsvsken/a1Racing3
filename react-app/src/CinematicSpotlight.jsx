@@ -129,8 +129,8 @@ float volumetricCone(vec2 origin, vec2 dir, vec2 coord, float spread, float len)
   // Soft edge feathering
   float edgeSoftness = smoothstep(0.0, 0.08, cosAngle);
 
-  // Origin glow
-  float originGlow = exp(-dist / (iResolution.y * 0.06)) * 0.5;
+  // Origin glow — tight hotspot
+  float originGlow = exp(-dist / (iResolution.y * 0.04)) * 0.15;
 
   // Atmospheric fog
   vec2 fogUv = coord * 0.0015 + vec2(iTime * 0.02, -iTime * 0.015);
@@ -192,8 +192,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   vec2 targetPos = iSpotlight * iResolution.xy;
   vec2 rayDir = normalize(targetPos - rayPos);
 
-  // Tight spread = 0.18 for a narrow focused beam
-  float spread = 0.18;
+  // Very tight spread = 0.06 for a narrow focused searchlight beam
+  float spread = 0.06;
   float len = 1.8;
 
   // Primary volumetric cone
