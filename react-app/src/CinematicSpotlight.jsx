@@ -14,6 +14,8 @@ const CinematicSpotlight = ({ className = '' }) => {
   const isHoveredRef = useRef(false);
   const mousePosRef = useRef({ x: 0.72, y: 0.32 });
   const currentPosRef = useRef({ x: 0.72, y: 0.32 });
+  const textRef = useRef(null);
+  const textBasePos = useRef({ x: 0.72, y: 0.32 });
 
   // Monitor visibility
   const [isVisible, setIsVisible] = useState(true);
@@ -260,6 +262,16 @@ void main() {
         const { clientWidth, clientHeight } = canvasContainerRef.current;
         renderer.setSize(clientWidth, clientHeight);
         uniforms.iResolution.value = [clientWidth * renderer.dpr, clientHeight * renderer.dpr];
+
+        // Measure text position relative to container
+        if (textRef.current && containerRef.current) {
+          const textRect = textRef.current.getBoundingClientRect();
+          const containerRect = containerRef.current.getBoundingClientRect();
+          textBasePos.current = {
+            x: (textRect.left + textRect.width * 0.5 - containerRect.left) / containerRect.width,
+            y: (textRect.top + textRect.height * 0.5 - containerRect.top) / containerRect.height
+          };
+        }
       };
 
       window.addEventListener('resize', handleResize);
@@ -276,9 +288,9 @@ void main() {
           targetX = mousePosRef.current.x;
           targetY = mousePosRef.current.y;
         } else {
-          // Slow cinematic sweep
-          targetX = 0.55 + 0.22 * Math.sin(time * 0.00025);
-          targetY = 0.32 + 0.12 * Math.cos(time * 0.00045);
+          // Slow cinematic sweep centered exactly on the text!
+          targetX = textBasePos.current.x + 0.16 * Math.sin(time * 0.0003);
+          targetY = textBasePos.current.y + 0.08 * Math.cos(time * 0.0005);
         }
 
         // Smooth interpolation with inertia
@@ -350,7 +362,7 @@ void main() {
 
       {/* Dark blurred A1 text — shifted right */}
       <div className="spotlight-text-overlay">
-        <span className="spotlight-a1-text">A1</span>
+        <span ref={textRef} className="spotlight-a1-text">A1</span>
       </div>
     </div>
   );
