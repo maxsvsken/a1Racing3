@@ -327,7 +327,7 @@ export default function App() {
             </div>
           </div>
           {/* Пустая правая колонка для визуального акцента на Бэт-сигнале */}
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', minHeight: '300px' }}>
+          <div className="hidden-mobile" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', minHeight: '300px' }}>
           </div>
         </div>
       </section>
