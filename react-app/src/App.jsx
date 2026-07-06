@@ -417,7 +417,7 @@ export default function App() {
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <div className="art-frame">
-                <img src="/images/IMG_6513v2.WEBP" alt="Александр Файн" />
+                <img src="/images/superhero/director.jpg" alt="Александр Файн" />
               </div>
             </div>
           </div>
@@ -484,7 +484,7 @@ export default function App() {
             
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <div className="art-frame">
-                <img src="/images/superhero/superhero_investors.png" alt="Инвесторы А1" />
+                <img src="/images/superhero/investors.jpg" alt="Инвесторы А1" />
               </div>
             </div>
           </div>
@@ -565,7 +565,7 @@ export default function App() {
             
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <div className="art-frame">
-                <img src="/images/superhero/superhero_expertise.png" alt="Экспертиза А1" />
+                <img src="/images/superhero/expertise.jpg" alt="Экспертиза А1" />
               </div>
             </div>
           </div>
