@@ -118,43 +118,39 @@ float fbm(vec2 p) {
   return v;
 }
 
-// === Clean cone beam that widens toward target and stops at it ===
-float volumetricCone(vec2 origin, vec2 dir, vec2 coord, float spreadStart, float spreadEnd, float targetDist) {
+// === Cone beam: clean trapezoid shape, widens from source to target ===
+float volumetricCone(vec2 origin, vec2 dir, vec2 coord, float radiusStart, float radiusEnd, float targetDist) {
   vec2 toCoord = coord - origin;
   float dist = length(toCoord);
   if (dist < 0.001) return 1.0;
-  vec2 d = toCoord / dist;
+  if (dist > targetDist * 1.02) return 0.0;
 
-  float cosAngle = dot(d, dir);
+  // Projection of point onto beam axis
+  float along = dot(toCoord, dir);
+  if (along < 0.0) return 0.0;
 
-  // Hard cutoff: beam ends at target distance
-  float cutoff = smoothstep(targetDist * 1.02, targetDist * 0.88, dist);
-  if (cutoff < 0.001) return 0.0;
+  // Perpendicular distance from beam axis
+  vec2 perp = toCoord - dir * along;
+  float perpDist = length(perp);
 
-  // Normalized distance along beam
-  float t = dist / targetDist;
+  // Beam radius at this point along the axis (linear interpolation)
+  float t = clamp(along / targetDist, 0.0, 1.0);
+  float beamRadius = mix(radiusStart, radiusEnd, t);
 
-  // Spread widens linearly from source to target
-  float dynamicSpread = mix(spreadStart, spreadEnd, clamp(t, 0.0, 1.0));
-  float angleFactor = pow(max(cosAngle, 0.0), 1.0 / max(dynamicSpread, 0.001));
+  // Hard edge with slight feather — clean cone, not spherical
+  float edge = smoothstep(beamRadius * 1.05, beamRadius * 0.9, perpDist);
 
-  // Soft conical edge — beam shape, not circle
-  float edgeSoftness = smoothstep(0.0, 0.06, cosAngle);
-
-  // Smooth intensity falloff — brighter near target
-  float falloff = clamp(t * 0.6 + 0.4, 0.0, 1.0);
+  // Smooth brightness falloff along beam length
+  float lengthFalloff = clamp(t * 0.5 + 0.5, 0.0, 1.0);
 
   // Subtle flicker
   float flicker = 0.97 + 0.03 * sin(iTime * 5.7 + dist * 0.003);
 
-  // Origin glow — tight hotspot
-  float originGlow = exp(-dist / (iResolution.y * 0.04)) * 0.1;
-
-  return (angleFactor * edgeSoftness * falloff + originGlow) * flicker * cutoff;
+  return edge * lengthFalloff * flicker;
 }
 
 // === Dust particles ===
-float drawDust(vec2 coord, vec2 origin, vec2 dir, float spread, float maxDist) {
+float drawDust(vec2 coord, vec2 origin, vec2 dir, float beamRadius, float maxDist) {
   float dustGlow = 0.0;
   for (int i = 0; i < 50; i++) {
     float id = float(i);
@@ -174,12 +170,14 @@ float drawDust(vec2 coord, vec2 origin, vec2 dir, float spread, float maxDist) {
 
     vec2 toP = p - origin;
     float dist = length(toP);
-    vec2 d = toP / max(dist, 0.001);
-    float cosA = dot(d, dir);
-    float sFact = pow(max(cosA, 0.0), 1.0 / max(spread, 0.001));
+    float along = dot(toP, dir);
+    float t = clamp(along / maxDist, 0.0, 1.0);
+    float r = mix(beamRadius * 0.05, beamRadius, t);
+    vec2 perp = toP - dir * along;
+    float perpDist = length(perp);
+    float inside = smoothstep(r * 1.1, r * 0.9, perpDist);
     float fOff = clamp((maxDist - dist) / maxDist, 0.0, 1.0);
-
-    float inside = sFact * fOff;
+    inside *= fOff;
 
     if (inside > 0.03) {
       float distPx = length(coord - p);
@@ -202,18 +200,19 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   // Screen aspect ratio — smaller circle/beam on mobile
   float aspect = iResolution.x / iResolution.y;
 
-  // Beam widens from narrow source to wide circle at target
-  float spreadStart = 0.04;
-  float spreadEnd = aspect < 1.0 ? 0.22 : 0.38;
+  // Beam radii in pixels — narrow at source, wide at target (matches circle)
+  float radiusStart = iResolution.y * 0.02;
+  float spotRadius = aspect < 1.0 ? iResolution.y * 0.22 : iResolution.y * 0.38;
+  float radiusEnd = spotRadius;
 
   // Distance from light source to target — beam ends exactly at the circle
   float targetDist = length(targetPos - rayPos);
 
-  // Primary volumetric cone — widens toward target, stops at it
-  float beam = volumetricCone(rayPos, rayDir, coord, spreadStart, spreadEnd, targetDist);
+  // Primary cone beam — clean trapezoid, widens to circle
+  float beam = volumetricCone(rayPos, rayDir, coord, radiusStart, radiusEnd, targetDist);
 
   // Dust particles
-  float dust = drawDust(coord, rayPos, rayDir, spreadEnd, targetDist);
+  float dust = drawDust(coord, rayPos, rayDir, radiusEnd, targetDist);
 
   // Color: warm white with slight golden tint
   vec3 beamColor = vec3(1.0, 0.96, 0.88);
@@ -231,22 +230,21 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
   vec3 finalColor = bgColor + lightColor;
 
-  // Circular spotlight projection at beam target — flat disk
+  // Flat circular disk at beam target — no sphere shading
   float distToTarget = length(coord - targetPos);
-  float spotRadius = aspect < 1.0 ? iResolution.y * 0.22 : iResolution.y * 0.38;
   float spotFalloff = distToTarget / spotRadius;
 
-  // Sharp circular disk edge with soft feathering
-  float spotDisk = 1.0 - smoothstep(0.85, 1.0, spotFalloff);
+  // Clean disk edge with soft feathering
+  float spotDisk = 1.0 - smoothstep(0.88, 1.0, spotFalloff);
 
-  // Bright center fading outward
-  float spotCore = exp(-spotFalloff * spotFalloff * 1.5);
-  float spotGlow = exp(-spotFalloff * 2.2) * 0.35;
+  // Even brightness across disk, slight hot center
+  float spotCenter = (1.0 - smoothstep(0.0, 0.5, spotFalloff)) * 0.3;
+  float spotGlow = exp(-spotFalloff * 3.0) * 0.2;
 
   // Subtle flicker for realism
   float spotFlicker = 0.93 + 0.07 * sin(iTime * 7.3) + 0.04 * sin(iTime * 3.7);
 
-  float spotHit = (spotDisk * 0.5 + spotCore * 0.5 + spotGlow) * spotFlicker * iIntensity;
+  float spotHit = (spotDisk * 0.8 + spotCenter + spotGlow) * spotFlicker * iIntensity;
   finalColor += beamColor * spotHit * 1.1;
 
   // Vignette
