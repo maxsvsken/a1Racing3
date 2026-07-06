@@ -5,6 +5,7 @@ import './CinematicSpotlight.css';
 const CinematicSpotlight = ({ className = '' }) => {
   const containerRef = useRef(null);
   const canvasContainerRef = useRef(null);
+  const overlayRef = useRef(null);
   const rendererRef = useRef(null);
   const uniformsRef = useRef(null);
   const animationIdRef = useRef(null);
@@ -17,7 +18,7 @@ const CinematicSpotlight = ({ className = '' }) => {
   const textRef = useRef(null);
   const textBasePos = useRef(
     typeof window !== 'undefined' && window.innerWidth <= 991
-      ? { x: 0.5, y: 0.82 }
+      ? { x: 0.5, y: 0.18 }
       : { x: 0.72, y: 0.45 }
   );
   const startTimeRef = useRef(null);
@@ -115,8 +116,8 @@ float fbm(vec2 p) {
   return v;
 }
 
-// === Tight volumetric cone ===
-float volumetricCone(vec2 origin, vec2 dir, vec2 coord, float spread, float len) {
+// === Volumetric cone that widens toward target ===
+float volumetricCone(vec2 origin, vec2 dir, vec2 coord, float spreadStart, float spreadEnd, float len) {
   vec2 toCoord = coord - origin;
   float dist = length(toCoord);
   if (dist < 0.001) return 1.0;
@@ -131,8 +132,9 @@ float volumetricCone(vec2 origin, vec2 dir, vec2 coord, float spread, float len)
   float linear = clamp(1.0 - t, 0.0, 1.0);
   float falloff = mix(invSq, linear, 0.3);
 
-  // Tight angular spread
-  float angleFactor = pow(max(cosAngle, 0.0), 1.0 / max(spread, 0.001));
+  // Spread widens linearly from source to target
+  float dynamicSpread = mix(spreadStart, spreadEnd, clamp(t, 0.0, 1.0));
+  float angleFactor = pow(max(cosAngle, 0.0), 1.0 / max(dynamicSpread, 0.001));
 
   // Soft edge feathering
   float edgeSoftness = smoothstep(0.0, 0.08, cosAngle);
@@ -200,15 +202,16 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   vec2 targetPos = iSpotlight * iResolution.xy;
   vec2 rayDir = normalize(targetPos - rayPos);
 
-  // Very tight spread = 0.06 for a narrow focused searchlight beam
-  float spread = 0.06;
+  // Beam widens from narrow source to wide circle at target
+  float spreadStart = 0.04;
+  float spreadEnd = 0.16;
   float len = 1.8;
 
-  // Primary volumetric cone
-  float beam = volumetricCone(rayPos, rayDir, coord, spread, len);
+  // Primary volumetric cone — widens toward target
+  float beam = volumetricCone(rayPos, rayDir, coord, spreadStart, spreadEnd, len);
 
   // Dust particles
-  float dust = drawDust(coord, rayPos, rayDir, spread, len);
+  float dust = drawDust(coord, rayPos, rayDir, spreadEnd, len);
 
   // Color: warm golden white
   vec3 beamColor = vec3(1.0, 0.88, 0.55);
@@ -223,24 +226,23 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
   vec3 finalColor = bgColor + lightColor;
 
-  // Realistic circular spotlight projection at beam target
+  // Realistic circular spotlight projection at beam target — the beam's end cap
   float distToTarget = length(coord - targetPos);
-  float spotRadius = iResolution.y * 0.11;
+  float spotRadius = iResolution.y * 0.15;
   float spotFalloff = distToTarget / spotRadius;
 
-  // Sharp circular edge with soft feathering
-  float spotDisk = 1.0 - smoothstep(0.7, 1.05, spotFalloff);
-  spotDisk *= step(0.0, 1.0 - spotFalloff);
+  // Sharp circular disk edge with soft feathering
+  float spotDisk = 1.0 - smoothstep(0.82, 1.0, spotFalloff);
 
   // Bright hot center fading outward
-  float spotCore = exp(-spotFalloff * spotFalloff * 1.8);
-  float spotGlow = exp(-spotFalloff * 2.5) * 0.35;
+  float spotCore = exp(-spotFalloff * spotFalloff * 1.5);
+  float spotGlow = exp(-spotFalloff * 2.2) * 0.4;
 
   // Subtle flicker for realism
   float spotFlicker = 0.93 + 0.07 * sin(iTime * 7.3) + 0.04 * sin(iTime * 3.7);
 
-  float spotHit = (spotDisk * 0.45 + spotCore * 0.55 + spotGlow) * spotFlicker;
-  finalColor += beamColor * spotHit * 0.9;
+  float spotHit = (spotDisk * 0.55 + spotCore * 0.6 + spotGlow) * spotFlicker;
+  finalColor += beamColor * spotHit * 1.1;
 
   // Vignette
   float vignette = uv.x * uv.y * (1.0 - uv.x) * (1.0 - uv.y);
@@ -343,6 +345,12 @@ void main() {
 
         uniforms.iSpotlight.value = [currentPosRef.current.x, currentPosRef.current.y];
 
+        // Update CSS mask position so A1 text is visible only inside the spotlight circle
+        if (overlayRef.current) {
+          overlayRef.current.style.setProperty('--spot-x', (currentPosRef.current.x * 100) + '%');
+          overlayRef.current.style.setProperty('--spot-y', (currentPosRef.current.y * 100) + '%');
+        }
+
         try {
           renderer.render({ scene: mesh });
           animationIdRef.current = requestAnimationFrame(animLoop);
@@ -404,8 +412,8 @@ void main() {
       {/* 3D Volumetric Beam & Dust Canvas */}
       <div ref={canvasContainerRef} className="spotlight-canvas-container" />
 
-      {/* Dark blurred A1 text — shifted right */}
-      <div className="spotlight-text-overlay">
+      {/* A1 text — visible only where the spotlight circle hits it */}
+      <div ref={overlayRef} className="spotlight-text-overlay">
         <span ref={textRef} className="spotlight-a1-text">A1</span>
       </div>
     </div>
