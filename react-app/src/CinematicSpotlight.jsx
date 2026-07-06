@@ -231,39 +231,23 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
   vec3 finalColor = bgColor + lightColor;
 
-  // Realistic 3D sphere spotlight projection at beam target
+  // Circular spotlight projection at beam target — flat disk
   float distToTarget = length(coord - targetPos);
   float spotRadius = aspect < 1.0 ? iResolution.y * 0.22 : iResolution.y * 0.38;
   float spotFalloff = distToTarget / spotRadius;
 
-  // Soft outer glow halo — light spilling beyond sphere
-  float haloGlow = exp(-spotFalloff * 2.5) * 0.25;
+  // Sharp circular disk edge with soft feathering
+  float spotDisk = 1.0 - smoothstep(0.85, 1.0, spotFalloff);
 
-  // Sphere disk — sharp but feathered edge
-  float sphereMask = 1.0 - smoothstep(0.85, 1.0, spotFalloff);
-
-  // 3D sphere shading — light comes from beam direction (bottom-right)
-  vec2 toFrag = (coord - targetPos) / spotRadius;
-  vec2 sphereLightDir = normalize(-rayDir);
-  float ndotl = dot(normalize(vec3(toFrag, sqrt(max(0.0, 1.0 - dot(toFrag, toFrag))))), vec3(sphereLightDir, 0.7));
-  float diffuse = max(ndotl, 0.0);
-
-  // Specular highlight — bright spot where light reflects
-  vec3 viewDir = vec3(0.0, 0.0, 1.0);
-  vec3 normal3 = normalize(vec3(toFrag, sqrt(max(0.0, 1.0 - dot(toFrag, toFrag)))));
-  vec3 halfDir = normalize(vec3(sphereLightDir, 0.7) + viewDir);
-  float specular = pow(max(dot(normal3, halfDir), 0.0), 32.0);
-
-  // Rim light — bright edge on sphere silhouette
-  float rim = pow(1.0 - max(dot(normal3, viewDir), 0.0), 2.0) * 0.3;
+  // Bright center fading outward
+  float spotCore = exp(-spotFalloff * spotFalloff * 1.5);
+  float spotGlow = exp(-spotFalloff * 2.2) * 0.35;
 
   // Subtle flicker for realism
   float spotFlicker = 0.93 + 0.07 * sin(iTime * 7.3) + 0.04 * sin(iTime * 3.7);
 
-  // Combine: diffuse sphere + specular + rim + outer halo
-  float sphereLight = (diffuse * 0.5 + specular * 0.8 + rim) * sphereMask;
-  float spotHit = (sphereLight + haloGlow) * spotFlicker * iIntensity;
-  finalColor += beamColor * spotHit * 1.3;
+  float spotHit = (spotDisk * 0.5 + spotCore * 0.5 + spotGlow) * spotFlicker * iIntensity;
+  finalColor += beamColor * spotHit * 1.1;
 
   // Vignette
   float vignette = uv.x * uv.y * (1.0 - uv.x) * (1.0 - uv.y);
