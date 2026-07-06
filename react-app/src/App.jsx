@@ -141,7 +141,7 @@ export default function App() {
 
       const title = triggerEl.querySelector('.section-title');
       const desc = triggerEl.querySelector('.section-desc');
-      const elements = triggerEl.querySelectorAll('.glass-panel, .solutions-grid > div, .code-scroll-item, .art-frame');
+      const elements = triggerEl.querySelectorAll('.glass-panel, .solutions-grid > div, .code-scroll-item');
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -204,7 +204,7 @@ export default function App() {
         }
       });
       // Сбросить застрявшие from-анимации: убрать inline opacity:0
-      document.querySelectorAll('.section-title, .section-desc, .glass-panel, .solutions-grid > div, .code-scroll-item, .art-frame').forEach(el => {
+      document.querySelectorAll('.section-title, .section-desc, .glass-panel, .solutions-grid > div, .code-scroll-item').forEach(el => {
         if (el.style.opacity === '0') {
           gsap.set(el, { opacity: 1, y: 0, clearProps: 'filter' });
         }

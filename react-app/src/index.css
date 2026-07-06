@@ -1214,7 +1214,7 @@ section {
 }
 
 /* Настройки скролл-эффектов HUD для контента */
-.glass-panel, .solutions-grid > div, .code-scroll-item, .art-frame {
+.glass-panel, .solutions-grid > div, .code-scroll-item {
     transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.2s ease, filter 1.2s ease;
 }
 
@@ -1256,17 +1256,11 @@ section {
     background: rgb(3, 5, 12);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
     overflow: hidden;
+    opacity: 1 !important;
 }
 
-#about .art-frame,
-#director .art-frame {
-    background: rgb(3, 5, 12);
-    opacity: 1;
-}
-
-#about .art-frame img,
-#director .art-frame img {
-    opacity: 1;
+.art-frame img {
+    opacity: 1 !important;
 }
 
 .art-frame::before {
