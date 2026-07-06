@@ -220,9 +220,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   // Dust particles
   float dust = drawDust(coord, rayPos, rayDir, spreadEnd, targetDist);
 
-  // Color: warm golden white
-  vec3 beamColor = vec3(1.0, 0.88, 0.55);
-  vec3 coreColor = vec3(1.0, 0.95, 0.85);
+  // Color: warm white with slight golden tint
+  vec3 beamColor = vec3(1.0, 0.96, 0.88);
+  vec3 coreColor = vec3(1.0, 0.98, 0.95);
 
   float coreIntensity = pow(beam, 2.0);
   vec3 lightColor = mix(beamColor, coreColor, coreIntensity) * (beam + dust * 0.5);
