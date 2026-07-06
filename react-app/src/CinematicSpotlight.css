@@ -76,7 +76,7 @@
     .spotlight-text-overlay {
         align-items: flex-end;
         justify-content: center;
-        padding-bottom: 10vh;
+        padding-bottom: 14vh;
     }
 
     .spotlight-a1-text {
@@ -99,7 +99,7 @@
 
 @media (max-width: 576px) {
     .spotlight-text-overlay {
-        padding-bottom: 8vh;
+        padding-bottom: 12vh;
     }
 
     .spotlight-a1-text {
