@@ -118,7 +118,7 @@ float fbm(vec2 p) {
   return v;
 }
 
-// === Volumetric cone that widens toward target and stops at it ===
+// === Clean cone beam that widens toward target and stops at it ===
 float volumetricCone(vec2 origin, vec2 dir, vec2 coord, float spreadStart, float spreadEnd, float targetDist) {
   vec2 toCoord = coord - origin;
   float dist = length(toCoord);
@@ -128,36 +128,32 @@ float volumetricCone(vec2 origin, vec2 dir, vec2 coord, float spreadStart, float
   float cosAngle = dot(d, dir);
 
   // Hard cutoff: beam ends at target distance
-  float cutoff = smoothstep(targetDist * 1.02, targetDist * 0.85, dist);
+  float cutoff = smoothstep(targetDist * 1.02, targetDist * 0.88, dist);
   if (cutoff < 0.001) return 0.0;
 
-  // Physically-based inverse-square falloff
+  // Normalized distance along beam
   float t = dist / targetDist;
-  float invSq = 1.0 / (1.0 + t * t * 6.0);
-  float linear = clamp(1.0 - t, 0.0, 1.0);
-  float falloff = mix(invSq, linear, 0.3);
 
   // Spread widens linearly from source to target
   float dynamicSpread = mix(spreadStart, spreadEnd, clamp(t, 0.0, 1.0));
   float angleFactor = pow(max(cosAngle, 0.0), 1.0 / max(dynamicSpread, 0.001));
 
-  // Soft edge feathering
-  float edgeSoftness = smoothstep(0.0, 0.08, cosAngle);
+  // Sharp edge — matches circle disk style
+  float edgeSharpness = smoothstep(0.0, 0.02, cosAngle);
 
-  // Origin glow — tight hotspot
-  float originGlow = exp(-dist / (iResolution.y * 0.04)) * 0.15;
+  // Bright core along beam axis
+  float coreBeam = pow(max(cosAngle, 0.0), 1.0 / max(dynamicSpread * 0.4, 0.001));
 
-  // Atmospheric fog
-  vec2 fogUv = coord * 0.0015 + vec2(iTime * 0.02, -iTime * 0.015);
-  float fog = fbm(fogUv);
-  float fogDetail = fbm(fogUv * 3.0 + vec2(iTime * 0.05));
-  float atmosphere = 0.55 + 0.45 * mix(fog, fogDetail, 0.3);
+  // Smooth intensity falloff — brighter near target
+  float falloff = clamp(t * 0.7 + 0.3, 0.0, 1.0);
 
   // Subtle flicker
-  float flicker = 0.97 + 0.03 * sin(iTime * 5.7 + dist * 0.003)
-                       + 0.02 * sin(iTime * 3.1);
+  float flicker = 0.97 + 0.03 * sin(iTime * 5.7 + dist * 0.003);
 
-  return (angleFactor * edgeSoftness * falloff + originGlow) * atmosphere * flicker * cutoff;
+  // Origin glow — tight hotspot
+  float originGlow = exp(-dist / (iResolution.y * 0.04)) * 0.1;
+
+  return (angleFactor * edgeSharpness * falloff * 0.6 + coreBeam * falloff * 0.5 + originGlow) * flicker * cutoff;
 }
 
 // === Dust particles ===
@@ -225,7 +221,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   vec3 coreColor = vec3(1.0, 0.98, 0.95);
 
   float coreIntensity = pow(beam, 2.0);
-  vec3 lightColor = mix(beamColor, coreColor, coreIntensity) * (beam + dust * 0.5);
+  vec3 lightColor = mix(beamColor, coreColor, coreIntensity) * (beam + dust * 0.15);
 
   // Apply ignition intensity
   lightColor *= iIntensity;
