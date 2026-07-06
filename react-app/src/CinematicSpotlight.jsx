@@ -206,7 +206,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
   // Beam widens from narrow source to wide circle at target
   float spreadStart = 0.04;
-  float spreadEnd = 0.16;
+  float spreadEnd = 0.28;
   float len = 1.8;
 
   // Primary volumetric cone — widens toward target
@@ -233,7 +233,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
   // Realistic circular spotlight projection at beam target — the beam's end cap
   float distToTarget = length(coord - targetPos);
-  float spotRadius = iResolution.y * 0.15;
+  float spotRadius = iResolution.y * 0.28;
   float spotFalloff = distToTarget / spotRadius;
 
   // Sharp circular disk edge with soft feathering

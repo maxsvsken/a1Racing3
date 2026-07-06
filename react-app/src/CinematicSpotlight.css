@@ -39,14 +39,14 @@
     --spot-x: 72%;
     --spot-y: 45%;
     --spot-opacity: 0;
-    -webkit-mask: radial-gradient(circle 15vh at var(--spot-x) var(--spot-y),
-        rgba(0, 0, 0, var(--spot-opacity)) 25%,
-        rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 55%,
-        transparent 80%);
-    mask: radial-gradient(circle 15vh at var(--spot-x) var(--spot-y),
-        rgba(0, 0, 0, var(--spot-opacity)) 25%,
-        rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 55%,
-        transparent 80%);
+    -webkit-mask: radial-gradient(circle 28vh at var(--spot-x) var(--spot-y),
+        rgba(0, 0, 0, var(--spot-opacity)) 30%,
+        rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 60%,
+        transparent 85%);
+    mask: radial-gradient(circle 28vh at var(--spot-x) var(--spot-y),
+        rgba(0, 0, 0, var(--spot-opacity)) 30%,
+        rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 60%,
+        transparent 85%);
 }
 
 .spotlight-a1-text {
@@ -55,14 +55,13 @@
     font-weight: 950;
     letter-spacing: -0.04em;
     text-transform: uppercase;
-    color: #f5e6b8;
+    color: #0a0a0a;
     user-select: none;
     filter: blur(1px);
     opacity: 1;
     text-shadow:
-        0 0 30px rgba(255, 220, 130, 0.8),
-        0 0 60px rgba(255, 200, 100, 0.5),
-        0 0 100px rgba(255, 180, 60, 0.3);
+        0 0 20px rgba(0, 0, 0, 0.9),
+        0 0 40px rgba(0, 0, 0, 0.7);
 }
 
 /* Desktop positioning: center-right */
@@ -86,14 +85,14 @@
     }
 
     .spotlight-text-overlay {
-        -webkit-mask: radial-gradient(circle 12vh at var(--spot-x) var(--spot-y),
-            rgba(0, 0, 0, var(--spot-opacity)) 25%,
-            rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 55%,
-            transparent 80%);
-        mask: radial-gradient(circle 12vh at var(--spot-x) var(--spot-y),
-            rgba(0, 0, 0, var(--spot-opacity)) 25%,
-            rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 55%,
-            transparent 80%);
+        -webkit-mask: radial-gradient(circle 22vh at var(--spot-x) var(--spot-y),
+            rgba(0, 0, 0, var(--spot-opacity)) 30%,
+            rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 60%,
+            transparent 85%);
+        mask: radial-gradient(circle 22vh at var(--spot-x) var(--spot-y),
+            rgba(0, 0, 0, var(--spot-opacity)) 30%,
+            rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 60%,
+            transparent 85%);
     }
 }
 
@@ -104,13 +103,13 @@
     }
 
     .spotlight-text-overlay {
-        -webkit-mask: radial-gradient(circle 10vh at var(--spot-x) var(--spot-y),
-            rgba(0, 0, 0, var(--spot-opacity)) 25%,
-            rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 55%,
-            transparent 80%);
-        mask: radial-gradient(circle 10vh at var(--spot-x) var(--spot-y),
-            rgba(0, 0, 0, var(--spot-opacity)) 25%,
-            rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 55%,
-            transparent 80%);
+        -webkit-mask: radial-gradient(circle 18vh at var(--spot-x) var(--spot-y),
+            rgba(0, 0, 0, var(--spot-opacity)) 30%,
+            rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 60%,
+            transparent 85%);
+        mask: radial-gradient(circle 18vh at var(--spot-x) var(--spot-y),
+            rgba(0, 0, 0, var(--spot-opacity)) 30%,
+            rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 60%,
+            transparent 85%);
     }
 }
