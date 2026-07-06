@@ -229,23 +229,25 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   vec2 uv = fragCoord.xy / iResolution.xy;
   vec3 bgColor = vec3(0.018, 0.018, 0.022) * (1.0 - uv.y * 0.35);
 
-  vec3 finalColor = bgColor + lightColor;
-
-  // Flat circular disk at beam target — no sphere shading
+  // Mask out beam contribution inside the circle area — circle is drawn separately
   float distToTarget = length(coord - targetPos);
   float spotFalloff = distToTarget / spotRadius;
+  float beamMask = smoothstep(spotRadius * 0.7, spotRadius * 1.0, distToTarget);
+  lightColor *= beamMask;
 
+  vec3 finalColor = bgColor + lightColor;
+
+  // Flat circular disk at beam target — uniform fill, no axis line
   // Clean disk edge with soft feathering
   float spotDisk = 1.0 - smoothstep(0.88, 1.0, spotFalloff);
 
-  // Even brightness across disk, slight hot center
-  float spotCenter = (1.0 - smoothstep(0.0, 0.5, spotFalloff)) * 0.3;
-  float spotGlow = exp(-spotFalloff * 3.0) * 0.2;
+  // Even brightness across entire disk
+  float spotGlow = exp(-spotFalloff * 3.0) * 0.15;
 
   // Subtle flicker for realism
   float spotFlicker = 0.93 + 0.07 * sin(iTime * 7.3) + 0.04 * sin(iTime * 3.7);
 
-  float spotHit = (spotDisk * 0.8 + spotCenter + spotGlow) * spotFlicker * iIntensity;
+  float spotHit = (spotDisk * 0.9 + spotGlow) * spotFlicker * iIntensity;
   finalColor += beamColor * spotHit * 1.1;
 
   // Vignette
