@@ -677,12 +677,12 @@ section {
     max-width: 800px;
     margin: 0 auto 80px auto;
     padding: 48px;
-    background: rgba(5, 5, 10, 0.55);
-    backdrop-filter: blur(24px) saturate(120%);
-    -webkit-backdrop-filter: blur(24px) saturate(120%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(8, 10, 20, 0.85);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 32px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1), inset 0 -1px 1px rgba(255, 255, 255, 0.05);
 }
 
 .contact-form {
@@ -707,8 +707,10 @@ section {
 .form-group textarea {
     width: 100%;
     padding: 18px 24px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--color-border-glass);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 12px;
     color: #fff;
     font-family: var(--font-body);
@@ -720,8 +722,8 @@ section {
 .form-group input:focus, 
 .form-group textarea:focus {
     border-color: var(--color-accent-blue);
-    background: rgba(255, 255, 255, 0.04);
-    box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.1);
 }
 
 .form-consent {
