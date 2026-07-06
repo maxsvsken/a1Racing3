@@ -1156,15 +1156,6 @@ section {
     display: none;
 }
 
-/* Полная непрозрачность фоновых изображений для Кто мы и Руководство */
-#about .section-bg-image,
-#director .section-bg-image {
-    mask-image: none !important;
-    -webkit-mask-image: none !important;
-    filter: none !important;
-    opacity: 1 !important;
-}
-
 /* Анимация прожектора А1 (Бэт-сигнал) */
 .bat-signal-container {
     position: absolute;
