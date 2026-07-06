@@ -70,21 +70,48 @@ export default function App() {
       }, 100);
     }
 
-    // Синхронизация точек dot-navigation с прокруткой и активация анимации блоков
+    // Синхронизация точек dot-navigation с прокруткой и плавное появление/исчезновение секций
     sections.forEach((sec) => {
       const triggerEl = document.getElementById(sec.id);
       if (triggerEl) {
+        // Плавное появление секции
+        const animateIn = () => {
+          gsap.to(triggerEl, {
+            opacity: 1,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: 1.0,
+            ease: 'power3.out'
+          });
+          triggerEl.classList.add('is-visible');
+          setActiveSection(sec.id);
+        };
+
+        // Плавное исчезновение секции
+        const animateOut = () => {
+          gsap.to(triggerEl, {
+            opacity: 0,
+            y: -60,
+            filter: 'blur(8px)',
+            duration: 0.7,
+            ease: 'power3.in'
+          });
+          triggerEl.classList.remove('is-visible');
+        };
+
+        // Начальное состояние — скрытые (кроме hero)
+        if (sec.id !== 'hero') {
+          gsap.set(triggerEl, { opacity: 0, y: 60, filter: 'blur(8px)' });
+        }
+
         ScrollTrigger.create({
           trigger: triggerEl,
-          start: 'top 65%',
-          onEnter: () => {
-            setActiveSection(sec.id);
-            triggerEl.classList.add('is-visible');
-          },
-          onEnterBack: () => {
-            setActiveSection(sec.id);
-            triggerEl.classList.add('is-visible');
-          }
+          start: 'top 75%',
+          end: 'bottom 25%',
+          onEnter: animateIn,
+          onEnterBack: animateIn,
+          onLeave: animateOut,
+          onLeaveBack: animateOut
         });
       }
     });
@@ -105,7 +132,7 @@ export default function App() {
       ease: 'power3.out'
     }, '-=0.8');
 
-    // Плавное появление секций
+    // Плавное появление элементов внутри секций (дополнительно к появлению секции)
     sections.forEach(sec => {
       if (sec.id === 'hero') return;
 
@@ -119,8 +146,8 @@ export default function App() {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: triggerEl,
-          start: 'top 80%',
-          toggleActions: 'play none none none'
+          start: 'top 75%',
+          toggleActions: 'play none none reverse'
         }
       });
 
@@ -166,13 +193,14 @@ export default function App() {
     const timer2 = setTimeout(() => { ScrollTrigger.refresh(); }, 2000);
     const timer3 = setTimeout(() => { ScrollTrigger.refresh(); }, 4000);
 
-    // Фоллбэк: через 3 секунды принудительно показать все секции,
+    // Фоллбэк: через 3.5 секунды принудительно показать все секции,
     // которые GSAP мог не раскрыть из-за неправильных координат
     const fallbackTimer = setTimeout(() => {
       sections.forEach(sec => {
         const el = document.getElementById(sec.id);
-        if (el && !el.classList.contains('is-visible')) {
+        if (el) {
           el.classList.add('is-visible');
+          gsap.set(el, { opacity: 1, y: 0, filter: 'blur(0px)' });
         }
       });
       // Сбросить застрявшие from-анимации: убрать inline opacity:0
