@@ -86,11 +86,11 @@
     }
 
     .spotlight-text-overlay {
-        -webkit-mask: radial-gradient(circle 30vh at var(--spot-x) var(--spot-y),
+        -webkit-mask: radial-gradient(circle 18vh at var(--spot-x) var(--spot-y),
             rgba(0, 0, 0, var(--spot-opacity)) 30%,
             rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 60%,
             transparent 85%);
-        mask: radial-gradient(circle 30vh at var(--spot-x) var(--spot-y),
+        mask: radial-gradient(circle 18vh at var(--spot-x) var(--spot-y),
             rgba(0, 0, 0, var(--spot-opacity)) 30%,
             rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 60%,
             transparent 85%);
@@ -108,11 +108,11 @@
     }
 
     .spotlight-text-overlay {
-        -webkit-mask: radial-gradient(circle 24vh at var(--spot-x) var(--spot-y),
+        -webkit-mask: radial-gradient(circle 14vh at var(--spot-x) var(--spot-y),
             rgba(0, 0, 0, var(--spot-opacity)) 30%,
             rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 60%,
             transparent 85%);
-        mask: radial-gradient(circle 24vh at var(--spot-x) var(--spot-y),
+        mask: radial-gradient(circle 14vh at var(--spot-x) var(--spot-y),
             rgba(0, 0, 0, var(--spot-opacity)) 30%,
             rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 60%,
             transparent 85%);
