@@ -223,10 +223,24 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
   vec3 finalColor = bgColor + lightColor;
 
-  // Spot glow where beam hits
+  // Realistic circular spotlight projection at beam target
   float distToTarget = length(coord - targetPos);
-  float spotHit = exp(-distToTarget / (iResolution.y * 0.18)) * 0.1;
-  finalColor += beamColor * spotHit;
+  float spotRadius = iResolution.y * 0.11;
+  float spotFalloff = distToTarget / spotRadius;
+
+  // Sharp circular edge with soft feathering
+  float spotDisk = 1.0 - smoothstep(0.7, 1.05, spotFalloff);
+  spotDisk *= step(0.0, 1.0 - spotFalloff);
+
+  // Bright hot center fading outward
+  float spotCore = exp(-spotFalloff * spotFalloff * 1.8);
+  float spotGlow = exp(-spotFalloff * 2.5) * 0.35;
+
+  // Subtle flicker for realism
+  float spotFlicker = 0.93 + 0.07 * sin(iTime * 7.3) + 0.04 * sin(iTime * 3.7);
+
+  float spotHit = (spotDisk * 0.45 + spotCore * 0.55 + spotGlow) * spotFlicker;
+  finalColor += beamColor * spotHit * 0.9;
 
   // Vignette
   float vignette = uv.x * uv.y * (1.0 - uv.x) * (1.0 - uv.y);
