@@ -118,8 +118,8 @@ float fbm(vec2 p) {
   return v;
 }
 
-// === Volumetric cone that widens toward target ===
-float volumetricCone(vec2 origin, vec2 dir, vec2 coord, float spreadStart, float spreadEnd, float len) {
+// === Volumetric cone that widens toward target and stops at it ===
+float volumetricCone(vec2 origin, vec2 dir, vec2 coord, float spreadStart, float spreadEnd, float targetDist) {
   vec2 toCoord = coord - origin;
   float dist = length(toCoord);
   if (dist < 0.001) return 1.0;
@@ -127,9 +127,12 @@ float volumetricCone(vec2 origin, vec2 dir, vec2 coord, float spreadStart, float
 
   float cosAngle = dot(d, dir);
 
+  // Hard cutoff: beam ends at target distance
+  float cutoff = smoothstep(targetDist * 1.02, targetDist * 0.85, dist);
+  if (cutoff < 0.001) return 0.0;
+
   // Physically-based inverse-square falloff
-  float maxDist = iResolution.x * len;
-  float t = dist / maxDist;
+  float t = dist / targetDist;
   float invSq = 1.0 / (1.0 + t * t * 6.0);
   float linear = clamp(1.0 - t, 0.0, 1.0);
   float falloff = mix(invSq, linear, 0.3);
@@ -154,11 +157,11 @@ float volumetricCone(vec2 origin, vec2 dir, vec2 coord, float spreadStart, float
   float flicker = 0.97 + 0.03 * sin(iTime * 5.7 + dist * 0.003)
                        + 0.02 * sin(iTime * 3.1);
 
-  return (angleFactor * edgeSoftness * falloff + originGlow) * atmosphere * flicker;
+  return (angleFactor * edgeSoftness * falloff + originGlow) * atmosphere * flicker * cutoff;
 }
 
 // === Dust particles ===
-float drawDust(vec2 coord, vec2 origin, vec2 dir, float spread, float len) {
+float drawDust(vec2 coord, vec2 origin, vec2 dir, float spread, float maxDist) {
   float dustGlow = 0.0;
   for (int i = 0; i < 50; i++) {
     float id = float(i);
@@ -181,8 +184,7 @@ float drawDust(vec2 coord, vec2 origin, vec2 dir, float spread, float len) {
     vec2 d = toP / max(dist, 0.001);
     float cosA = dot(d, dir);
     float sFact = pow(max(cosA, 0.0), 1.0 / max(spread, 0.001));
-    float maxD = iResolution.x * len;
-    float fOff = clamp((maxD - dist) / maxD, 0.0, 1.0);
+    float fOff = clamp((maxDist - dist) / maxDist, 0.0, 1.0);
 
     float inside = sFact * fOff;
 
@@ -207,13 +209,15 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   // Beam widens from narrow source to wide circle at target
   float spreadStart = 0.04;
   float spreadEnd = 0.28;
-  float len = 1.8;
 
-  // Primary volumetric cone — widens toward target
-  float beam = volumetricCone(rayPos, rayDir, coord, spreadStart, spreadEnd, len);
+  // Distance from light source to target — beam ends exactly at the circle
+  float targetDist = length(targetPos - rayPos);
+
+  // Primary volumetric cone — widens toward target, stops at it
+  float beam = volumetricCone(rayPos, rayDir, coord, spreadStart, spreadEnd, targetDist);
 
   // Dust particles
-  float dust = drawDust(coord, rayPos, rayDir, spreadEnd, len);
+  float dust = drawDust(coord, rayPos, rayDir, spreadEnd, targetDist);
 
   // Color: warm golden white
   vec3 beamColor = vec3(1.0, 0.88, 0.55);
