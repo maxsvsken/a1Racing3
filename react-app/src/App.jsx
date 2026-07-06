@@ -363,7 +363,7 @@ export default function App() {
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <div className="art-frame">
-                <img src="/images/superhero/superhero_building.png" alt="Офис А1" />
+                <img src="/images/superhero/oqaayx.jpg" alt="Офис А1" />
               </div>
             </div>
           </div>
