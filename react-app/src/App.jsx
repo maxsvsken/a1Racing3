@@ -596,7 +596,7 @@ export default function App() {
           <div className="about-layout" style={{ alignItems: 'stretch', gap: '60px' }}>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'start' }}>
               <div className="art-frame">
-                <img src="/images/superhero/c00s6rc00s6rc00s.png" alt="Кодекс А1" />
+                <img src="/images/superhero/c00s6r.jpg" alt="Кодекс А1" />
               </div>
             </div>
             
