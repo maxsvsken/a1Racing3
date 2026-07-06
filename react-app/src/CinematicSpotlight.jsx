@@ -123,7 +123,6 @@ float volumetricCone(vec2 origin, vec2 dir, vec2 coord, float radiusStart, float
   vec2 toCoord = coord - origin;
   float dist = length(toCoord);
   if (dist < 0.001) return 1.0;
-  if (dist > targetDist * 1.02) return 0.0;
 
   // Projection of point onto beam axis
   float along = dot(toCoord, dir);
@@ -140,13 +139,15 @@ float volumetricCone(vec2 origin, vec2 dir, vec2 coord, float radiusStart, float
   // Hard edge with slight feather — clean cone, not spherical
   float edge = smoothstep(beamRadius * 1.05, beamRadius * 0.9, perpDist);
 
-  // Smooth brightness falloff along beam length
+  // Smooth brightness falloff along beam length — fade out as it meets circle
   float lengthFalloff = clamp(t * 0.5 + 0.5, 0.0, 1.0);
+  // Smoothly fade beam at the very end so it merges into circle seamlessly
+  float endFade = smoothstep(targetDist * 0.98, targetDist * 0.85, along);
 
   // Subtle flicker
   float flicker = 0.97 + 0.03 * sin(iTime * 5.7 + dist * 0.003);
 
-  return edge * lengthFalloff * flicker;
+  return edge * lengthFalloff * endFade * flicker;
 }
 
 // === Dust particles ===
