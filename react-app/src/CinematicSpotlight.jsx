@@ -138,14 +138,11 @@ float volumetricCone(vec2 origin, vec2 dir, vec2 coord, float spreadStart, float
   float dynamicSpread = mix(spreadStart, spreadEnd, clamp(t, 0.0, 1.0));
   float angleFactor = pow(max(cosAngle, 0.0), 1.0 / max(dynamicSpread, 0.001));
 
-  // Sharp edge — matches circle disk style
-  float edgeSharpness = smoothstep(0.0, 0.02, cosAngle);
-
-  // Bright core along beam axis
-  float coreBeam = pow(max(cosAngle, 0.0), 1.0 / max(dynamicSpread * 0.4, 0.001));
+  // Soft conical edge — beam shape, not circle
+  float edgeSoftness = smoothstep(0.0, 0.06, cosAngle);
 
   // Smooth intensity falloff — brighter near target
-  float falloff = clamp(t * 0.7 + 0.3, 0.0, 1.0);
+  float falloff = clamp(t * 0.6 + 0.4, 0.0, 1.0);
 
   // Subtle flicker
   float flicker = 0.97 + 0.03 * sin(iTime * 5.7 + dist * 0.003);
@@ -153,7 +150,7 @@ float volumetricCone(vec2 origin, vec2 dir, vec2 coord, float spreadStart, float
   // Origin glow — tight hotspot
   float originGlow = exp(-dist / (iResolution.y * 0.04)) * 0.1;
 
-  return (angleFactor * edgeSharpness * falloff * 0.6 + coreBeam * falloff * 0.5 + originGlow) * flicker * cutoff;
+  return (angleFactor * edgeSoftness * falloff + originGlow) * flicker * cutoff;
 }
 
 // === Dust particles ===
