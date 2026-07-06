@@ -1251,9 +1251,20 @@ section {
     border: 2px solid rgba(255, 183, 0, 0.2);
     border-radius: 8px;
     padding: 12px;
-    background: rgba(3, 5, 12, 1);
+    background: rgb(3, 5, 12);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
     overflow: hidden;
+}
+
+#about .art-frame,
+#director .art-frame {
+    background: rgb(3, 5, 12);
+    opacity: 1;
+}
+
+#about .art-frame img,
+#director .art-frame img {
+    opacity: 1;
 }
 
 .art-frame::before {
