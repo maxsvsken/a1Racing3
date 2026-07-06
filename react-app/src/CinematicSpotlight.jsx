@@ -23,6 +23,7 @@ const CinematicSpotlight = ({ className = '' }) => {
   );
   const startTimeRef = useRef(null);
   const hasInteractedRef = useRef(false);
+  const currentIntensityRef = useRef(0);
 
   // Monitor visibility
   const [isVisible, setIsVisible] = useState(true);
@@ -86,6 +87,7 @@ void main() {
 uniform float iTime;
 uniform vec2  iResolution;
 uniform vec2  iSpotlight;
+uniform float iIntensity;
 
 varying vec2 vUv;
 
@@ -220,6 +222,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   float coreIntensity = pow(beam, 2.0);
   vec3 lightColor = mix(beamColor, coreColor, coreIntensity) * (beam + dust * 0.5);
 
+  // Apply ignition intensity
+  lightColor *= iIntensity;
+
   // Very dark background
   vec2 uv = fragCoord.xy / iResolution.xy;
   vec3 bgColor = vec3(0.018, 0.018, 0.022) * (1.0 - uv.y * 0.35);
@@ -241,7 +246,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   // Subtle flicker for realism
   float spotFlicker = 0.93 + 0.07 * sin(iTime * 7.3) + 0.04 * sin(iTime * 3.7);
 
-  float spotHit = (spotDisk * 0.55 + spotCore * 0.6 + spotGlow) * spotFlicker;
+  float spotHit = (spotDisk * 0.55 + spotCore * 0.6 + spotGlow) * spotFlicker * iIntensity;
   finalColor += beamColor * spotHit * 1.1;
 
   // Vignette
@@ -266,7 +271,8 @@ void main() {
       const uniforms = {
         iTime: { value: 0 },
         iResolution: { value: [1, 1] },
-        iSpotlight: { value: [0.72, 0.32] }
+        iSpotlight: { value: [0.72, 0.32] },
+        iIntensity: { value: 0 }
       };
       uniformsRef.current = uniforms;
 
@@ -313,31 +319,55 @@ void main() {
         }
 
         const elapsed = time - startTimeRef.current;
-        const scanDuration = 6000; // 6 секунд сканирования
 
-        // Read hover state from ref (no re-render)
+        // Phase 1: Ignition flicker (0–1.2s) — beam struggles to light up like a real searchlight
+        // Phase 2: Scanning search (1.2s–7s) — beam sweeps to find A1
+        // Phase 3: Locked on target (7s+) — steady beam with live micro-jitter on A1
+        const igniteDuration = 1200;
+        const scanDuration = 7000;
+
+        let intensity;
         let targetX, targetY;
+
         if (isHoveredRef.current) {
+          // User interaction — full power, follow mouse
+          intensity = 1.0;
           targetX = mousePosRef.current.x;
           targetY = mousePosRef.current.y;
           hasInteractedRef.current = true;
+        } else if (elapsed < igniteDuration && !hasInteractedRef.current) {
+          // === Ignition: flickering attempts to start ===
+          const p = elapsed / igniteDuration;
+          // Multiple flicker bursts building up to full intensity
+          const flickerBase = p * p * (3.0 - 2.0 * p); // smooth ease-in
+          const flickerNoise =
+            0.35 * Math.sin(elapsed * 0.04) * Math.sin(elapsed * 0.027) +
+            0.25 * Math.sin(elapsed * 0.07) +
+            0.15 * (Math.random() - 0.5);
+          // Random sputters — sometimes almost dies
+          const sputter = elapsed < 700 ? (Math.random() > 0.6 ? 0.8 : 0.1) : 1.0;
+          intensity = Math.max(0, Math.min(1, flickerBase + flickerNoise * (1 - p) * sputter));
+          // Beam starts pointing roughly at target area
+          targetX = textBasePos.current.x + 0.08 * Math.sin(elapsed * 0.005);
+          targetY = textBasePos.current.y + 0.05 * Math.cos(elapsed * 0.004);
+        } else if (elapsed < scanDuration && !hasInteractedRef.current) {
+          // === Scanning search: sweeping to find A1 ===
+          intensity = 0.92 + 0.08 * Math.sin(elapsed * 0.008); // gentle pulsing
+          const progress = (elapsed - igniteDuration) / (scanDuration - igniteDuration);
+          const amp = 1.0 - progress;
+          targetX = textBasePos.current.x + 0.4 * Math.sin(time * 0.0016) * amp;
+          targetY = textBasePos.current.y + 0.2 * Math.cos(time * 0.0011) * amp;
         } else {
-          const baseX = textBasePos.current.x;
-          const baseY = textBasePos.current.y;
-
-          if (elapsed < scanDuration && !hasInteractedRef.current) {
-            const progress = elapsed / scanDuration;
-            const amp = 1.0 - progress; // Затухание амплитуды поиска
-            
-            // Спиральное сужение траектории поиска к центру А1
-            targetX = baseX + 0.45 * Math.sin(time * 0.0016) * amp;
-            targetY = baseY + 0.22 * Math.cos(time * 0.0011) * amp;
-          } else {
-            // Захват цели: микро-дрожание живого прожектора на тексте А1
-            targetX = baseX + 0.006 * Math.sin(time * 0.001);
-            targetY = baseY + 0.004 * Math.cos(time * 0.0007);
-          }
+          // === Locked on target: living micro-jitter ===
+          intensity = 0.95 + 0.05 * Math.sin(time * 0.002) + 0.02 * Math.sin(time * 0.007);
+          targetX = textBasePos.current.x + 0.006 * Math.sin(time * 0.001);
+          targetY = textBasePos.current.y + 0.004 * Math.cos(time * 0.0007);
         }
+
+        // Smooth intensity
+        if (!currentIntensityRef.current) currentIntensityRef.current = 0;
+        currentIntensityRef.current += (intensity - currentIntensityRef.current) * 0.15;
+        uniforms.iIntensity.value = currentIntensityRef.current;
 
         // Smooth interpolation with inertia
         currentPosRef.current.x += (targetX - currentPosRef.current.x) * 0.03;
@@ -349,6 +379,7 @@ void main() {
         if (overlayRef.current) {
           overlayRef.current.style.setProperty('--spot-x', (currentPosRef.current.x * 100) + '%');
           overlayRef.current.style.setProperty('--spot-y', (currentPosRef.current.y * 100) + '%');
+          overlayRef.current.style.setProperty('--spot-opacity', currentIntensityRef.current.toFixed(3));
         }
 
         try {

@@ -38,13 +38,14 @@
     box-sizing: border-box;
     --spot-x: 72%;
     --spot-y: 45%;
+    --spot-opacity: 0;
     -webkit-mask: radial-gradient(circle 15vh at var(--spot-x) var(--spot-y),
-        rgba(0, 0, 0, 1) 25%,
-        rgba(0, 0, 0, 0.7) 55%,
+        rgba(0, 0, 0, var(--spot-opacity)) 25%,
+        rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 55%,
         transparent 80%);
     mask: radial-gradient(circle 15vh at var(--spot-x) var(--spot-y),
-        rgba(0, 0, 0, 1) 25%,
-        rgba(0, 0, 0, 0.7) 55%,
+        rgba(0, 0, 0, var(--spot-opacity)) 25%,
+        rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 55%,
         transparent 80%);
 }
 
@@ -86,12 +87,12 @@
 
     .spotlight-text-overlay {
         -webkit-mask: radial-gradient(circle 12vh at var(--spot-x) var(--spot-y),
-            rgba(0, 0, 0, 1) 25%,
-            rgba(0, 0, 0, 0.7) 55%,
+            rgba(0, 0, 0, var(--spot-opacity)) 25%,
+            rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 55%,
             transparent 80%);
         mask: radial-gradient(circle 12vh at var(--spot-x) var(--spot-y),
-            rgba(0, 0, 0, 1) 25%,
-            rgba(0, 0, 0, 0.7) 55%,
+            rgba(0, 0, 0, var(--spot-opacity)) 25%,
+            rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 55%,
             transparent 80%);
     }
 }
@@ -104,12 +105,12 @@
 
     .spotlight-text-overlay {
         -webkit-mask: radial-gradient(circle 10vh at var(--spot-x) var(--spot-y),
-            rgba(0, 0, 0, 1) 25%,
-            rgba(0, 0, 0, 0.7) 55%,
+            rgba(0, 0, 0, var(--spot-opacity)) 25%,
+            rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 55%,
             transparent 80%);
         mask: radial-gradient(circle 10vh at var(--spot-x) var(--spot-y),
-            rgba(0, 0, 0, 1) 25%,
-            rgba(0, 0, 0, 0.7) 55%,
+            rgba(0, 0, 0, var(--spot-opacity)) 25%,
+            rgba(0, 0, 0, calc(var(--spot-opacity) * 0.7)) 55%,
             transparent 80%);
     }
 }
